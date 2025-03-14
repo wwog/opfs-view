@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { FileService } from "./mod";
 
-const callback = (set: any) => {
+const creator = (set: any) => {
   const fileService = new FileService();
   fileService.onRefreshChange((isRefreshing) => {
     set({
@@ -9,6 +9,7 @@ const callback = (set: any) => {
       currentItems: fileService.currentItems,
       currentPath: fileService.currentPath,
       canGoBack: fileService.canGoBack,
+      usage: fileService.usage,
     });
   });
 
@@ -19,8 +20,9 @@ const callback = (set: any) => {
     currentPath: fileService.currentPath,
     currentItems: fileService.currentItems,
     canGoBack: fileService.canGoBack,
+    usage: fileService.usage,
     fileService,
   };
 };
 
-export const useFileService = create<ReturnType<typeof callback>>(callback);
+export const useFileService = create<ReturnType<typeof creator>>(creator);

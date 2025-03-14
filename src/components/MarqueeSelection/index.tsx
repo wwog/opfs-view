@@ -23,6 +23,10 @@ interface MarqueeSelectionProps {
    * @param selectedItems - Array of currently selected DOM elements
    */
   onSelectionChange?: (selectedItems: Element[]) => void;
+  /** Callback fired whenever the selection state changes (selection or deselection)
+   * @param selectedItems - Array of currently selected DOM elements
+   */
+  onSelectedChange?: (selectedItems: Element[]) => void;
   /** Additional CSS class name for the container */
   className?: string;
   /** Additional CSS styles for the container */
@@ -65,6 +69,7 @@ export const MarqueeSelection = forwardRef<
     onSelectionChange,
     onSelectionFinish,
     onSelectedItemDoubleClick,
+    onSelectedChange,
     className = "",
     style,
     selectionBoxClassName = "marquee-selection-box",
@@ -81,6 +86,7 @@ export const MarqueeSelection = forwardRef<
   });
   const startPoint = useRef({ x: 0, y: 0 });
   const [selectedElements, setSelectedElements] = useState<Element[]>([]);
+
   const isDragging = useRef(false);
 
   const [menuProps, setMenuProps] = useState<{
@@ -263,7 +269,6 @@ export const MarqueeSelection = forwardRef<
           !child.classList.contains("marquee-selection-internal")
       );
 
-      // 点击已选中项目
       if (clickedChild && selectedElements.includes(clickedChild)) {
         setMenuProps({
           visible: true,
@@ -274,7 +279,6 @@ export const MarqueeSelection = forwardRef<
         return;
       }
 
-      // 点击未选中项目
       if (clickedChild) {
         setSelectedElements([clickedChild]);
         setMenuProps({
@@ -364,6 +368,10 @@ export const MarqueeSelection = forwardRef<
       });
     };
   }, [selectedElements, selectedItemClassName]);
+
+  useEffect(() => {
+    onSelectedChange?.(selectedElements);
+  }, [selectedElements]);
 
   return (
     <>

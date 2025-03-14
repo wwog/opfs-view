@@ -9,10 +9,13 @@ import { If } from "../Common/If";
 import { extname } from "../../utils/opfsPath";
 import { List } from "../List";
 import toast from "react-hot-toast";
+import { StatusBar } from "./StatusBar";
+import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =
     useFileService();
+  const { setSelectItems } = useOpfsViewerStore();
   const openItem = (clickedItem: Element) => {
     const name = clickedItem.getAttribute("data-name")!;
     const kind = clickedItem.getAttribute("data-kind")!;
@@ -69,20 +72,23 @@ export const OpfsViewer: FC = () => {
           height: "100%",
         }}
         onDrop={(fileSystemHandles) => {
-          fileService.upload(fileSystemHandles);
+          fileService.save(fileSystemHandles);
         }}
       >
         <MarqueeSelection
           className={css.viewContainer}
           selectedItemClassName={css.selected}
           onSelectedItemDoubleClick={openItem}
+          onSelectedChange={(selectedItems) => {
+            setSelectItems(selectedItems);
+          }}
           contextMenuContent={(e, clicked, selectedItems) => {
             return (
               <If condition={clicked !== null}>
                 <List>
                   <List.Item
                     onClick={() => {
-                      openItem(JSON.parse(clicked!.getAttribute("data-node")!));
+                      openItem(clicked!);
                     }}
                   >
                     Open
@@ -104,6 +110,17 @@ export const OpfsViewer: FC = () => {
                     }}
                   >
                     Delete (<span>{selectedItems.length}</span> items)
+                  </List.Item>
+                  <List.Item
+                    onClick={() => {
+                      fileService.saveToDisk(
+                        selectedItems.map(
+                          (item) => item.getAttribute("data-path")!
+                        )
+                      );
+                    }}
+                  >
+                    Save To Disk
                   </List.Item>
                 </List>
 
@@ -148,6 +165,8 @@ export const OpfsViewer: FC = () => {
           />
         </MarqueeSelection>
       </DropWrapper>
+
+      <StatusBar />
     </div>
   );
 };

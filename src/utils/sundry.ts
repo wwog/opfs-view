@@ -21,7 +21,6 @@ export function once<T extends (...args: any[]) => any>(
     }
   };
 
-  // 添加获取运行状态的方法
   const result = Object.assign(wrappedFn, {
     isRunning: () => isRunning,
   });
@@ -29,13 +28,7 @@ export function once<T extends (...args: any[]) => any>(
   return result;
 }
 
-/**
- * @description 安全的获取是否运行在安全上下文(https)中,在非浏览器环境下会抛出错误，可通过restrain参数控制是否抛出错误
- * @description_en Safely get whether running in a secure context (https), will throw an error in non-browser environments，can control whether to throw an error through the restrain parameter
- * @param [restrain=true] - 是否抑制错误,默认为true
- * @param [restrain=true] - Whether to suppress errors, default is true
- * @returns {boolean}
- */
+
 export function safeIsSecureContext(restrain = true): boolean {
   if (self.isSecureContext !== undefined) {
     return self.isSecureContext;
@@ -57,8 +50,7 @@ export function safeIsSecureContext(restrain = true): boolean {
 }
 
 /**
- * @description 包含随机生成的、长度为 36 字符的第四版 UUID 字符串。
- * @description_en Contains a randomly generated, 36-character, version 4 UUID string.
+ *  Contains a randomly generated, 36-character, version 4 UUID string.
  */
 export function safeRandomUUID() {
   if (typeof self.crypto !== "undefined" && safeIsSecureContext()) {
@@ -68,7 +60,6 @@ export function safeRandomUUID() {
     if (typeof self.crypto.getRandomValues === "function") {
       const buffer = new Uint8Array(16);
       crypto.getRandomValues(buffer);
-      // 设置UUID版本（4）和变体（10xx）
       buffer[6] = (buffer[6] & 0x0f) | 0x40; // Version 4
       buffer[8] = (buffer[8] & 0x3f) | 0x80; // Variant 10xx
       const hexArr = new Array(16);

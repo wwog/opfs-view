@@ -4,11 +4,17 @@ import {
   mkdir,
   readDir,
   remove,
+  stat,
 } from "@happy-js/happy-opfs";
 import { once } from "../utils/sundry";
 import { extname, normalize, resolve } from "../utils/opfsPath";
 import { Emitter } from "monaco-editor";
-import { getDirHandle, upload } from "./helper";
+import {
+  getDirHandle,
+  getOpfsUsage,
+  saveToDirHandle,
+  type OpfsUsage,
+} from "./helper";
 
 function checkPathValidity(path: string) {
   const isValid = path.startsWith(ROOT_DIR);
@@ -31,6 +37,13 @@ export class FileService {
   onRefreshChange = this._onRefreshChange.event;
 
   currentItems: FileSystemItem[] = [];
+  usage: OpfsUsage = {
+    usage: 0,
+    percent: 0,
+    quota: 0,
+    quotaStr: "0",
+    usageStr: "0",
+  };
 
   get currentPath() {
     return this._currentPath;
@@ -82,6 +95,8 @@ export class FileService {
       return a.handle.name.localeCompare(b.handle.name);
     });
 
+    const usage = await getOpfsUsage();
+    this.usage = usage;
     this.currentItems = items;
     this._onRefreshChange.fire(false);
     return items;
@@ -113,9 +128,9 @@ export class FileService {
     await this.refresh();
   };
 
-  upload = async (handles: FileSystemHandle[]) => {
+  save = async (handles: FileSystemHandle[]) => {
     const parentDirHandle = await getDirHandle(this.currentPath);
-    await upload(parentDirHandle, handles);
+    await saveToDirHandle(parentDirHandle, handles);
     await this.refresh();
   };
 
@@ -125,5 +140,23 @@ export class FileService {
     });
     await Promise.all(promises);
     await this.refresh();
+  };
+
+  saveToDisk = async (paths: string[]) => {
+    const handles = await Promise.all(
+      paths.map(async (path) => {
+        const res = await stat(path);
+        return res.unwrap();
+      })
+    );
+
+    const diskHandle: FileSystemDirectoryHandle =
+      //@ts-expect-error saveHandle
+      await window.showDirectoryPicker({
+        mode: "readwrite",
+        startIn: "downloads",
+      });
+
+    await saveToDirHandle(diskHandle, handles);
   };
 }

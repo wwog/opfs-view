@@ -38,7 +38,7 @@ export interface UploadHooks {
   onCompleted: () => void;
 }
 
-export async function upload(
+export async function saveToDirHandle(
   parentDirHandle: FileSystemDirectoryHandle,
   fileHandles: FileSystemHandle[],
   hooks?: UploadHooks
@@ -81,7 +81,7 @@ export async function upload(
         create: true,
       });
       const handles = await asyncIteratorToArray(handle.values());
-      return upload(dirHandle, handles, hooks);
+      return saveToDirHandle(dirHandle, handles, hooks);
     }
   };
 
@@ -93,3 +93,35 @@ export async function upload(
     hooks.onCompleted();
   }
 }
+
+export function byteToReadableStr(byte: number) {
+  const units = ["B", "KB", "MB", "GB", "TB", "PB"];
+  let i = 0;
+  while (byte > 1024) {
+    byte /= 1024;
+    i++;
+  }
+  const truncated = Math.floor(byte * 100) / 100;
+  return `${truncated.toFixed(2)} ${units[i]}`;
+}
+
+export async function getOpfsUsage() {
+  const { quota = 1, usage = 1 } = await navigator.storage.estimate();
+
+  const percent = Math.floor((usage / quota) * 10000) / 100;
+
+  return {
+    quotaStr: byteToReadableStr(quota!),
+    usageStr: byteToReadableStr(usage!),
+    quota,
+    usage,
+    percent,
+  };
+}
+export type OpfsUsage = {
+  quotaStr: string;
+  usageStr: string;
+  quota: number;
+  usage: number;
+  percent: number;
+};
