@@ -1,6 +1,11 @@
-import { isFileHandle, ROOT_DIR } from "@happy-js/happy-opfs";
+import {
+  isDirectoryHandle,
+  isFileHandle,
+  ROOT_DIR,
+} from "@happy-js/happy-opfs";
 import { isRelative, normalize, resolve } from "../utils/opfsPath";
 import { pipeToProgress } from "../utils/stream";
+import { asyncIteratorToArray } from "../utils/sundry";
 
 export async function getDirHandle(
   path: string
@@ -69,6 +74,14 @@ export async function upload(
           }
         },
       });
+      return;
+    }
+    if (isDirectoryHandle(handle)) {
+      const dirHandle = await parentDirHandle.getDirectoryHandle(handle.name, {
+        create: true,
+      });
+      const handles = await asyncIteratorToArray(handle.values());
+      return upload(dirHandle, handles, hooks);
     }
   };
 

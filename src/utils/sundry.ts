@@ -147,3 +147,21 @@ export function PromiseWithResolvers<T = void>() {
 
   return { promise, resolve, reject };
 }
+
+export function asyncIteratorToArray<T>(
+  asyncIterator: AsyncIterable<T>
+): Promise<T[]> {
+  const result: T[] = [];
+  return new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        for await (const item of asyncIterator) {
+          result.push(item);
+        }
+        resolve(result);
+      } catch (e) {
+        reject(e);
+      }
+    })();
+  });
+}

@@ -69,6 +69,7 @@
 }
 
 .name {
+  width: 95%;
   flex: none;
   font-size: 12px;
   text-align: center;

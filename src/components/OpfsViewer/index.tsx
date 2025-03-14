@@ -7,6 +7,8 @@ import { Button } from "../Button";
 import { DropWrapper } from "../DropWrapper";
 import { If } from "../Common/If";
 import { extname } from "../../utils/opfsPath";
+import { List } from "../List";
+import toast from "react-hot-toast";
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =
@@ -58,14 +60,6 @@ export const OpfsViewer: FC = () => {
             >
               Refresh
             </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={handleNewCreateFolder}
-              icon="📂"
-            >
-              New Folder
-            </Button>
           </div>
         </div>
       </div>
@@ -82,17 +76,45 @@ export const OpfsViewer: FC = () => {
           className={css.viewContainer}
           selectedItemClassName={css.selected}
           onSelectedItemDoubleClick={openItem}
-          contextMenuContent={(e, clickItem, selectedItems) => {
+          contextMenuContent={(e, clicked, selectedItems) => {
             return (
-              <div>
-                <ul>
-                  {selectedItems.map((item) => {
-                    const path = item.getAttribute("data-path")!;
-                    const name = item.getAttribute("data-name")!;
-                    return <li key={path}>{name}</li>;
-                  })}
-                </ul>
-              </div>
+              <If condition={clicked !== null}>
+                <List>
+                  <List.Item
+                    onClick={() => {
+                      openItem(JSON.parse(clicked!.getAttribute("data-node")!));
+                    }}
+                  >
+                    Open
+                  </List.Item>
+                  <List.Item
+                    onClick={() => {
+                      toast.promise(
+                        fileService.remove(
+                          selectedItems.map(
+                            (item) => item.getAttribute("data-path")!
+                          )
+                        ),
+                        {
+                          loading: "Deleting...",
+                          success: "Deleted",
+                          error: "Failed to delete",
+                        }
+                      );
+                    }}
+                  >
+                    Delete (<span>{selectedItems.length}</span> items)
+                  </List.Item>
+                </List>
+
+                <If.Else>
+                  <List>
+                    <List.Item onClick={handleNewCreateFolder}>
+                      New Folder
+                    </List.Item>
+                  </List>
+                </If.Else>
+              </If>
             );
           }}
         >

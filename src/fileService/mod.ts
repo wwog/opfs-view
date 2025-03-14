@@ -3,6 +3,7 @@ import {
   isFileHandle,
   mkdir,
   readDir,
+  remove,
 } from "@happy-js/happy-opfs";
 import { once } from "../utils/sundry";
 import { extname, normalize, resolve } from "../utils/opfsPath";
@@ -113,8 +114,16 @@ export class FileService {
   };
 
   upload = async (handles: FileSystemHandle[]) => {
-    console.log("upload", handles);
     const parentDirHandle = await getDirHandle(this.currentPath);
-    return upload(parentDirHandle, handles);
+    await upload(parentDirHandle, handles);
+    await this.refresh();
+  };
+
+  remove = async (paths: string[]) => {
+    const promises = paths.map((path) => {
+      return remove(path);
+    });
+    await Promise.all(promises);
+    await this.refresh();
   };
 }
