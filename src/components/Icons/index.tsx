@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC, type DOMAttributes } from "react";
 
 export interface CloseProps {
   size?: number;
   color?: string;
   className?: string;
-  onClick?: () => void;
+  onClick?: DOMAttributes<HTMLDivElement>["onClick"];
 }
 export const Close: FC<CloseProps> = (props) => {
   const { size = 12, color = "#000", className, onClick } = props;
