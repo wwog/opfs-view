@@ -34,6 +34,7 @@ export interface FileSystemItem {
 export class FileService {
   private _currentPath: string = ROOT_DIR;
   private _onRefreshChange = new Emitter<boolean>();
+  static ImageExt = [".png", ".jpg", "jpeg"];
   onRefreshChange = this._onRefreshChange.event;
 
   currentItems: FileSystemItem[] = [];
@@ -77,7 +78,7 @@ export class FileService {
         kind: element.handle.kind,
         handle: element.handle,
       };
-      if ([".png", ".jpg", "jpeg"].includes(extname(item.name))) {
+      if (FileService.ImageExt.includes(extname(item.name))) {
         if (isFileHandle(element.handle)) {
           item.url = URL.createObjectURL(await element.handle.getFile());
         }
