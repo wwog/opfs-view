@@ -4,6 +4,7 @@ import { useLocalStorage } from "./hooks/useLocalStorage";
 import { OpfsViewer } from "./components/OpfsViewer";
 import { isOPFSSupported } from "@happy-js/happy-opfs";
 import { Toaster } from "react-hot-toast";
+import { ApplicationContainer } from "./components/Application/container";
 
 export const App: FC = () => {
   const [sizes, setSizes] = useLocalStorage("sizes", [2, 2.5]);
@@ -25,7 +26,7 @@ export const App: FC = () => {
         <OpfsViewer />
       </Allotment.Pane>
       <Allotment.Pane>
-        <div>暂时没有数据</div>
+        <ApplicationContainer />
       </Allotment.Pane>
     </Allotment>
   );

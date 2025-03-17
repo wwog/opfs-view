@@ -11,7 +11,7 @@ import { List } from "../List";
 import toast from "react-hot-toast";
 import { StatusBar } from "./StatusBar";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
-import { FileService } from '../../services/fileService/mod';
+import { FileService } from "../../services/fileService/mod";
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =
@@ -26,7 +26,6 @@ export const OpfsViewer: FC = () => {
       const ext = extname(name);
       if (FileService.ImageExt.includes(ext)) {
         const url = clickedItem.querySelector("img")!.src;
-        //用浏览器小窗口打开
         window.open(url, "_blank", "popup=true");
       }
     } else {
@@ -55,25 +54,6 @@ export const OpfsViewer: FC = () => {
           </Button>
 
           <div>{currentPath}</div>
-        </div>
-        <div>
-          <div
-            style={{
-              display: "flex",
-              gap: "8px",
-            }}
-          >
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => {
-                fileService.refresh();
-              }}
-              icon="🔄"
-            >
-              Refresh
-            </Button>
-          </div>
         </div>
       </div>
       <DropWrapper
@@ -137,7 +117,10 @@ export const OpfsViewer: FC = () => {
                 <If.Else>
                   <List>
                     <List.Item onClick={handleNewCreateFolder}>
-                      New Folder
+                      📁 New Folder
+                    </List.Item>
+                    <List.Item onClick={() => fileService.refresh()}>
+                      🔄 Refresh
                     </List.Item>
                   </List>
                 </If.Else>
