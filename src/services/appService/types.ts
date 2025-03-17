@@ -7,6 +7,7 @@ export interface ApplicationProps {
 export interface Application {
   id: string;
   name: string;
+  showName?: (name: string, path: string) => string;
   icon: ReactNode;
   supportedFileTypes: string[];
   component: ComponentType<ApplicationProps>;
@@ -14,6 +15,7 @@ export interface Application {
 
 export interface ApplicationInstance {
   id: string;
+  showName: string;
   appId: string;
   filePath: string;
   active: boolean;

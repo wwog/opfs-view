@@ -5,30 +5,42 @@ import { Close } from "../Icons";
 interface SelectorItemProps {
   children?: ReactNode;
   active?: boolean;
+  onClose?: () => void;
+  onClick?: () => void;
 }
 export const SelectorItem: FC<SelectorItemProps> = (props) => {
-  const { active, children } = props;
+  const { active, children, onClose, onClick } = props;
   return (
-    <div className={"selector-item" + (active ? " item-active" : "")}>
+    <div
+      className={"selector-item" + (active ? " item-active" : "")}
+      onClick={onClick}
+    >
       <div className="item-content">
         <div>{children}</div>
-
-        <Close className="item-close" />
+        <Close className="item-close" onClick={onClose} />
       </div>
     </div>
   );
 };
 
 export const ApplicationSelector: FC = () => {
-  const { opened } = useAppService();
+  const { opened, appService } = useAppService();
   return (
     <div className="app-selector">
-      <SelectorItem>index.tsx</SelectorItem>
-      <SelectorItem active={true}>index.css</SelectorItem>
-      <SelectorItem>typescript.tsx</SelectorItem>
-      <SelectorItem>golang.tsx</SelectorItem>
-      <SelectorItem>application.tsx</SelectorItem>
-      <SelectorItem>useAppService.ts</SelectorItem>
+      {opened.map((item) => (
+        <SelectorItem
+          key={item.id}
+          active={item.active}
+          onClick={() => {
+            appService.changeActiveApp(item.id);
+          }}
+          onClose={() => {
+            appService.closeApp(item.id);
+          }}
+        >
+          {item.showName}
+        </SelectorItem>
+      ))}
     </div>
   );
 };

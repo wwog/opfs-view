@@ -12,14 +12,18 @@ import toast from "react-hot-toast";
 import { StatusBar } from "./StatusBar";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
 import { FileService } from "../../services/fileService/mod";
+import { useAppService } from "../../services/appService/useAppService";
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =
     useFileService();
+  const { appService } = useAppService();
   const { setSelectItems } = useOpfsViewerStore();
   const openItem = (clickedItem: Element) => {
     const name = clickedItem.getAttribute("data-name")!;
     const kind = clickedItem.getAttribute("data-kind")!;
+    const path = clickedItem.getAttribute("data-path")!;
+    
     if (kind === "directory") {
       fileService.jumpRelative(name);
     } else if (kind === "file") {
@@ -27,6 +31,8 @@ export const OpfsViewer: FC = () => {
       if (FileService.ImageExt.includes(ext)) {
         const url = clickedItem.querySelector("img")!.src;
         window.open(url, "_blank", "popup=true");
+      } else {
+        appService.openFile(path);
       }
     } else {
       console.error("Unknown kind");

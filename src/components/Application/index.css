@@ -13,16 +13,18 @@
   align-items: end;
   height: 48px;
   gap: 6px;
-  background-color: rgb(211, 226, 254);
+  background-color: rgb(240, 240, 240);
 }
 
 .selector-item {
   gap: 20px;
   height: 38px;
   min-width: 160px;
+  font-size: .9rem;
 
   &:not(.item-active):hover > .item-content {
-    background-color: rgb(166, 197, 255);
+    background-color: var(--primary-color);
+    color: white;
   }
 }
 

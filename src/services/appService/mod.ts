@@ -35,25 +35,28 @@ export class ApplicationService {
     });
   }
 
-  findApp(id: string) {
-    return this.registerApps.find((app) => app.id === id);
-  }
-
   registerApplication(app: Application) {
+    console.log("Register application", app);
     if (this.findApp(app.id) === undefined) {
       this.registerApps.push(app);
     }
   }
 
   getApplicationsByFileType(fileType: string) {
-    return this.registerApps.filter((app) =>
-      app.supportedFileTypes.includes(fileType)
+    return this.registerApps.filter(
+      (app) =>
+        app.supportedFileTypes.includes(fileType) ||
+        app.supportedFileTypes.includes("*")
     );
+  }
+
+  findApp(id: string) {
+    return this.registerApps.find((app) => app.id === id);
   }
 
   isOpen(filepath: string, appId: string) {
     return this.openApps.find(
-      (app) => app.id === appId && app.filePath === filepath
+      (app) => app.appId === appId && app.filePath === filepath
     );
   }
 
@@ -81,6 +84,7 @@ export class ApplicationService {
       appId: app.id,
       filePath: filepath,
       active: true,
+      showName: app.showName?.(app.name, filepath) ?? filepath.slice(1),
     };
     this.openApps.push(instance);
     this._onActiveChange.fire(instance);
