@@ -5,7 +5,30 @@
 }
 
 .topWrapper {
+  display: flex;
+  justify-content: space-between;
 }
 
-.botWrapper {
+.usage {
+  user-select: none;
+  position: relative;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: rgb(255, 255, 255);
+  &::after {
+    content: "";
+    border-radius: 4px;
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    background-color: rgb(189, 187, 187);
+  }
+}
+
+.percent {
+  position: absolute;
+  border-radius: 4px;
+  inset: 0;
+  z-index: -1;
+  background-color: #00a6ff;
 }

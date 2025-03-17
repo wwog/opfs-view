@@ -1,15 +1,15 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
 import css from "./statusBar.module.css";
 import { If } from "../Common/If";
 import { useFileService } from "../../fileService/useFileService";
 
-interface StatusBarProps {
-  children?: ReactNode;
-}
-export const StatusBar: FC<StatusBarProps> = (props) => {
+export const StatusBar: FC = () => {
   const { currentItems, usage } = useFileService();
   const { selectItems } = useOpfsViewerStore();
+
+  const right = 100 - (10 + usage.percent * 0.9);
+
   return (
     <div className={css.container}>
       <div className={css.topWrapper}>
@@ -22,12 +22,23 @@ export const StatusBar: FC<StatusBarProps> = (props) => {
         </div>
 
         <div className={css.usage}>
-          Usage: {usage.usage} ({usage.usageStr}) / {usage.quota} (
-          {usage.quotaStr})
+          <div
+            className={css.percent}
+            style={{
+              right: `${right}%`,
+            }}
+          ></div>
+          {usage.usageStr} / {usage.quotaStr}{" "}
+          <span
+            style={{
+              fontStyle: "italic",
+              fontSize: "0.8em",
+            }}
+          >
+            ({usage.percent}%)
+          </span>
         </div>
       </div>
-
-      <div className={css.botWrapper}>Percent:{usage.percent}</div>
     </div>
   );
 };
