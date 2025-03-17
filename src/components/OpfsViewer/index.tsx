@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { MarqueeSelection } from "../MarqueeSelection";
 import css from "./index.module.css";
-import { useFileService } from "../../fileService/useFileService";
+import { useFileService } from "../../services/fileService/useFileService";
 import { ArrayRender } from "../Common/ArrayRender";
 import { Button } from "../Button";
 import { DropWrapper } from "../DropWrapper";
@@ -11,7 +11,7 @@ import { List } from "../List";
 import toast from "react-hot-toast";
 import { StatusBar } from "./StatusBar";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
-import { FileService } from "../../fileService/mod";
+import { FileService } from '../../services/fileService/mod';
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =

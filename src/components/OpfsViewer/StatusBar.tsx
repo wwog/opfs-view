@@ -2,7 +2,7 @@ import { FC } from "react";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
 import css from "./statusBar.module.css";
 import { If } from "../Common/If";
-import { useFileService } from "../../fileService/useFileService";
+import { useFileService } from "../../services/fileService/useFileService";
 
 export const StatusBar: FC = () => {
   const { currentItems, usage } = useFileService();

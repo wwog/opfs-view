@@ -3,9 +3,9 @@ import {
   isFileHandle,
   ROOT_DIR,
 } from "@happy-js/happy-opfs";
-import { isRelative, normalize, resolve } from "../utils/opfsPath";
-import { pipeToProgress } from "../utils/stream";
-import { asyncIteratorToArray } from "../utils/sundry";
+import { isRelative, normalize, resolve } from "../../utils/opfsPath";
+import { pipeToProgress } from "../../utils/stream";
+import { asyncIteratorToArray } from "../../utils/sundry";
 
 export async function getDirHandle(
   path: string

@@ -6,8 +6,8 @@ import {
   remove,
   stat,
 } from "@happy-js/happy-opfs";
-import { once } from "../utils/sundry";
-import { extname, normalize, resolve } from "../utils/opfsPath";
+import { once } from "../../utils/sundry";
+import { extname, normalize, resolve } from "../../utils/opfsPath";
 import { Emitter } from "monaco-editor";
 import {
   getDirHandle,
