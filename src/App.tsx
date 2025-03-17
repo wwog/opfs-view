@@ -21,7 +21,7 @@ export const App: FC = () => {
         setSizes(sizes, true);
       }}
     >
-      <Allotment.Pane snap minSize={300} maxSize={720} preferredSize={410}>
+      <Allotment.Pane snap minSize={160} maxSize={720} preferredSize={410}>
         <Toaster position="bottom-left" />
         <OpfsViewer />
       </Allotment.Pane>

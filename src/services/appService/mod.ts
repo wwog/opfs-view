@@ -85,6 +85,7 @@ export class ApplicationService {
       filePath: filepath,
       active: true,
       showName: app.showName?.(app.name, filepath) ?? filepath.slice(1),
+      extName: fileExt,
     };
     this.openApps.push(instance);
     this._onActiveChange.fire(instance);

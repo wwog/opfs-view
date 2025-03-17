@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from "react";
 
 export interface ApplicationProps {
   filePath: string;
+  extName: string;
 }
 
 export interface Application {
@@ -18,5 +19,6 @@ export interface ApplicationInstance {
   showName: string;
   appId: string;
   filePath: string;
+  extName: string;
   active: boolean;
 }
