@@ -1,5 +1,11 @@
 {
-  "name": "web-os",
+  "name": "opfs-view",
+  "keywords": [
+    "opfs",
+    "sqlite",
+    "sqlite-wasm",
+    "filesystem"
+  ],
   "private": true,
   "version": "0.0.0",
   "type": "module",
