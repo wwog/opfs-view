@@ -35,7 +35,7 @@ export const OpfsViewer: FC = () => {
         appService.openFile(path);
       }
     } else {
-      console.error("Unknown kind");
+      toast.error("Unsupported file type");
     }
   };
 
