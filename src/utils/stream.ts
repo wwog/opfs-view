@@ -14,6 +14,7 @@ export async function pipeTo(
   options: PipeToOptions
 ) {
   const { offset = 0, length } = options;
+  console.log("pipeTo", offset, length);
   const reader = readableStream.getReader();
   const writer = writableStream.getWriter();
   const resResolver = PromiseWithResolvers<void>();
@@ -114,19 +115,22 @@ export async function pipeToProgress(
   readableStream: ReadableStream<Uint8Array>,
   writableStream: WritableStream<Uint8Array>,
   totalSize: number,
-  hooks: PipeToProgressOptions
+  options: PipeToProgressOptions
 ) {
   let loaded = 0;
 
   return pipeTo(readableStream, writableStream, {
+    offset: options.offset,
+    length: options.length,
+    onError: options.onError,
     onChunk(chunk) {
       loaded += chunk.length;
       const percent = parseFloat(((loaded / totalSize) * 100).toFixed(2));
-      hooks.onProgress?.(loaded, percent, totalSize);
-      hooks.onChunk?.(chunk);
+      options.onProgress?.(loaded, percent, totalSize);
+      options.onChunk?.(chunk);
     },
     onDone() {
-      hooks.onDone?.();
+      options.onDone?.();
     },
   });
 }

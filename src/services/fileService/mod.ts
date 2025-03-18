@@ -14,7 +14,8 @@ import { Emitter } from "monaco-editor";
 import {
   getDirHandle,
   getOpfsUsage,
-  saveToDirHandle,
+  saveToDisk,
+  saveToOpfs,
   type OpfsUsage,
 } from "./helper";
 import {
@@ -162,7 +163,7 @@ export class FileService {
 
   save = async (handles: FileSystemHandle[]) => {
     const parentDirHandle = await getDirHandle(this.currentPath);
-    await saveToDirHandle(parentDirHandle, handles);
+    await saveToOpfs(parentDirHandle, handles);
     await this.refresh();
   };
 
@@ -175,10 +176,13 @@ export class FileService {
   };
 
   saveToDisk = async (paths: string[]) => {
-    const handles = await Promise.all(
+    const items = await Promise.all(
       paths.map(async (path) => {
         const res = await stat(path);
-        return res.unwrap();
+        return {
+          handle: res.unwrap(),
+          path,
+        };
       })
     );
 
@@ -189,7 +193,7 @@ export class FileService {
         startIn: "downloads",
       });
 
-    await saveToDirHandle(diskHandle, handles);
+    await saveToDisk(diskHandle, items);
   };
 
   createFile = async (name: string) => {
