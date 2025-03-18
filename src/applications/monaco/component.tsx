@@ -1,40 +1,54 @@
 import { useRef, type FC } from "react";
 import type { ApplicationProps } from "../../services/appService/types";
-import { readTextFile } from "@happy-js/happy-opfs";
-import * as monaco from "monaco-editor";
 import { useOnce } from "../../hooks/useOnce";
-import { getLanguage } from "./utils";
+import { initEditor, saveModelToOpfs } from "./monacoOpfs";
+import * as monaco from "monaco-editor";
 
 export const MonacoEditor: FC<ApplicationProps> = (props) => {
   const { filePath, extName } = props;
-  const editorRef = useRef(null);
+  const editorWrapperRef = useRef<HTMLDivElement>(null);
+  const editorInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
+    null
+  );
 
   useOnce(() => {
     console.log("MonacoEditor Will Open File:", { extName, filePath });
 
-    readTextFile(filePath)
-      .then((data) => {
-        return data.unwrap();
-      })
-      .then((str) => {
-        monaco.editor.create(editorRef.current!, {
-          value: str,
-          language: getLanguage(extName),
-          autoClosingQuotes: "always",
-          automaticLayout: true, // 自动调整布局
-          theme: "vs", // 可以选择 'vs', 'vs-dark', 或 'hc-black'
-        });
-        if ([".jsx", ".tsx", ".js", ".ts"].includes(extName)) {
-          monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-            allowJs: true,
-            jsx: extName.endsWith("x")
-              ? monaco.languages.typescript.JsxEmit.ReactJSX
-              : undefined,
-            target: monaco.languages.typescript.ScriptTarget.ESNext,
-          });
-        }
-      });
+    initEditor(editorWrapperRef.current!, filePath, extName).then((editor) => {
+      editorInstanceRef.current = editor;
+    });
+
+    return () => {
+      if (editorInstanceRef.current) {
+        editorInstanceRef.current.dispose();
+        editorInstanceRef.current = null;
+      }
+    };
   }, [extName, filePath]);
 
-  return <div style={{ width: "100%", height: "100%" }} ref={editorRef}></div>;
+  const handleSave = async () => {
+    try {
+      if (editorInstanceRef.current) {
+        await saveModelToOpfs(filePath, editorInstanceRef.current!.getModel()!);
+        console.log("File saved successfully");
+      }
+    } catch (error) {
+      console.error("Error saving file:", error);
+    }
+  };
+
+  return (
+    <div
+      data-path={filePath}
+      style={{ width: "100%", height: "100%" }}
+      ref={editorWrapperRef}
+      onKeyDown={(e) => {
+        const ctrlOrMeta = e.ctrlKey || e.metaKey;
+        if (ctrlOrMeta && e.key === "s") {
+          e.preventDefault();
+          handleSave();
+        }
+      }}
+    ></div>
+  );
 };

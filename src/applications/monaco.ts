@@ -8,6 +8,7 @@ import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import { basename } from "../utils/opfsPath";
 
+// 配置Monaco的Web Worker
 self.MonacoEnvironment = {
   getWorker(_: any, label: string) {
     if (label === "json") {
@@ -26,7 +27,18 @@ self.MonacoEnvironment = {
   },
 };
 
+// 全局配置
 monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true);
+monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+  noSemanticValidation: false,
+  noSyntaxValidation: false,
+});
+
+// // 避免 workers 的初始化竞争
+// setTimeout(() => {
+//   // 预热TypeScript worker
+//   monaco.languages.typescript.getTypeScriptWorker();
+// }, 100);
 
 export const monacoApplication: Application = {
   id: "monaco",
