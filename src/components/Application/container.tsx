@@ -19,7 +19,6 @@ export const ApplicationContainer: FC = () => {
               <div
                 key={item.id}
                 className={"app-content" + (item.active ? " app-active" : "")}
-                style={{}}
               >
                 <app.component
                   filePath={item.filePath}

@@ -1,21 +1,11 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  
-  // 处理 monaco-editor 的 worker
+
   optimizeDeps: {
-    exclude: ['monaco-editor'],
+    exclude: ["monaco-editor", "@sqlite.org/sqlite-wasm"],
   },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'monaco-editor': ['monaco-editor']
-        }
-      }
-    }
-  },
-})
+});

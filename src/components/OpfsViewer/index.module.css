@@ -40,7 +40,7 @@
 }
 
 .item {
-  width: 140px;
+  width: 142px;
   height: 120px;
   padding: 8px;
   display: flex;
@@ -52,7 +52,7 @@
 .icon {
   flex: none;
   width: 120px;
-  height: 100px;
+  height: 90px;
   font-size: 64px;
   display: flex;
   justify-content: center;
@@ -69,7 +69,7 @@
 }
 
 .name {
-  width: 95%;
+  width: 98%;
   flex: none;
   font-size: 12px;
   text-align: center;

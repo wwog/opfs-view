@@ -1,5 +1,3 @@
-import { LRUCache } from "./struct/LRUCache";
-
 export function once<T extends (...args: any[]) => any>(
   fn: T
 ): {
@@ -27,7 +25,6 @@ export function once<T extends (...args: any[]) => any>(
 
   return result;
 }
-
 
 export function safeIsSecureContext(restrain = true): boolean {
   if (self.isSecureContext !== undefined) {
@@ -98,33 +95,6 @@ export function safeRandomUUID() {
   });
 }
 
-export const getTextWidth = (() => {
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-  if (!context) {
-    throw new Error("context is null");
-  }
-
-  const lruCache = new LRUCache<number>(100);
-
-  const getKey = (text: string, font: string) => {
-    const t = `${text}-${font}`;
-    return t;
-  };
-
-  return (text: string, font: string) => {
-    const key = getKey(text, font);
-    const cache = lruCache.get(key);
-    if (cache) {
-      return cache;
-    }
-    context.font = font;
-    const metrics = context.measureText(text);
-    const width = Math.round(metrics.width);
-    lruCache.set(key, width);
-    return width;
-  };
-})();
 
 export function PromiseWithResolvers<T = void>() {
   let resolve: (value: T) => void = null as unknown as (value: T) => void;

@@ -168,7 +168,12 @@ export const OpfsViewer: FC = () => {
                       <If.Else>📄</If.Else>
                     </If>
                   </div>
-                  <div className={css.name}>{name}</div>
+                  <div className={css.name}>
+                    <div>{name}</div>
+                    <If condition={item.subname !== undefined}>
+                      <div>{item.subname}</div>
+                    </If>
+                  </div>
                 </div>
               );
             }}

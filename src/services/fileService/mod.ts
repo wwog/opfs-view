@@ -17,6 +17,7 @@ import {
   saveToDirHandle,
   type OpfsUsage,
 } from "./helper";
+import { decodeSAHPoolFilename } from "../../utils/sqliteSAHPool";
 
 function checkPathValidity(path: string) {
   const isValid = path.startsWith(ROOT_DIR);
@@ -28,12 +29,21 @@ function checkPathValidity(path: string) {
 export interface FileSystemItem {
   name: string;
   path: string;
-  kind: "directory" | "file";
+  kind: "directory" | "file" | "dbFile";
   handle: FileSystemHandle;
   url?: string;
+  subname?: string;
 }
 
 export class FileService {
+  private static instance: FileService;
+  static getInstance(): FileService {
+    if (!FileService.instance) {
+      FileService.instance = new FileService();
+    }
+    return FileService.instance;
+  }
+
   private _currentPath: string = ROOT_DIR;
   private _onRefreshChange = new Emitter<boolean>();
   static ImageExt = [".png", ".jpg", "jpeg"];
@@ -64,27 +74,43 @@ export class FileService {
     return this.currentPath !== ROOT_DIR;
   }
 
-  constructor() {
+  private constructor() {
     console.log("FileService constructor");
   }
 
+  private handleSpecialFile = async (item: FileSystemItem, dirname: string) => {
+    if (isFileHandle(item.handle)) {
+      const ext = extname(item.name);
+      if (FileService.ImageExt.includes(ext)) {
+        item.url = URL.createObjectURL(await item.handle.getFile());
+        return;
+      }
+      if (dirname.endsWith(".opaque")) {
+        const file = await item.handle.getFile();
+        const filename = await decodeSAHPoolFilename(file);
+        if (filename) {
+          item.kind = "dbFile";
+          item.subname = filename;
+        }
+        return;
+      }
+    }
+  };
+
   refresh = once(async () => {
     this._onRefreshChange.fire(true);
-    const res = await readDir(this.currentPath);
+    const currentPath = this.currentPath;
+    const res = await readDir(currentPath);
     const reader = res.unwrap();
     const items: FileSystemItem[] = [];
     for await (const element of reader) {
       const item: FileSystemItem = {
         name: element.handle.name,
-        path: resolve(this.currentPath, element.handle.name),
+        path: resolve(currentPath, element.handle.name),
         kind: element.handle.kind,
         handle: element.handle,
       };
-      if (FileService.ImageExt.includes(extname(item.name))) {
-        if (isFileHandle(element.handle)) {
-          item.url = URL.createObjectURL(await element.handle.getFile());
-        }
-      }
+      await this.handleSpecialFile(item, currentPath);
       items.push(item);
     }
 

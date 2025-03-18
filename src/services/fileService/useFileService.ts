@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { FileService } from "./mod";
 
 const creator = (set: any) => {
-  const fileService = new FileService();
+  const fileService = FileService.getInstance();
   fileService.onRefreshChange((isRefreshing) => {
     set({
       isRefreshing,
