@@ -6,6 +6,7 @@ import {
 import { isRelative, normalize, resolve } from "../../utils/opfsPath";
 import { pipeToProgress } from "../../utils/stream";
 import { asyncIteratorToArray } from "../../utils/sundry";
+import { HEADER_OFFSET_DATA, SAHPoolDirName } from "../../utils/sqliteSAHPool";
 
 export async function getDirHandle(
   path: string
@@ -53,7 +54,12 @@ export async function saveToDirHandle(
       const writable = await opfsFileHandle.createWritable();
       const file = await handle.getFile();
       const path = resolve(parentDirPath, handle.name);
+      let offset = 0;
+      if (parentDirHandle.name === SAHPoolDirName) {
+        offset = HEADER_OFFSET_DATA;
+      }
       await pipeToProgress(file.stream(), writable, file.size, {
+        offset,
         onProgress(loaded, percent, totalSize) {
           if (hooks?.onProgress) {
             hooks.onProgress({

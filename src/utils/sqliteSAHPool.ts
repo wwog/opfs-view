@@ -14,7 +14,9 @@ const HEADER_FLAGS_SIZE = 4;
 const HEADER_DIGEST_SIZE = 8;
 const HEADER_CORPUS_SIZE = HEADER_MAX_PATH_SIZE + HEADER_FLAGS_SIZE;
 const HEADER_OFFSET_DIGEST = HEADER_CORPUS_SIZE;
-const HEADER_OFFSET_DATA = SECTOR_SIZE;
+export const HEADER_OFFSET_DATA = SECTOR_SIZE;
+
+export const SAHPoolDirName = ".opaque";
 
 export const computeSAHFileDigest = (byteArray: Uint8Array) => {
   let h1 = 0xdeadbeef;
@@ -52,3 +54,7 @@ export const decodeSAHPoolFilename = async (file: File) => {
   }
 };
 
+export const getSAHPollOriginData = async (file: File) => {
+  const fileData = file.slice(HEADER_OFFSET_DATA);
+  return fileData;
+};

@@ -17,7 +17,10 @@ import {
   saveToDirHandle,
   type OpfsUsage,
 } from "./helper";
-import { decodeSAHPoolFilename } from "../../utils/sqliteSAHPool";
+import {
+  decodeSAHPoolFilename,
+  SAHPoolDirName,
+} from "../../utils/sqliteSAHPool";
 
 function checkPathValidity(path: string) {
   const isValid = path.startsWith(ROOT_DIR);
@@ -85,7 +88,7 @@ export class FileService {
         item.url = URL.createObjectURL(await item.handle.getFile());
         return;
       }
-      if (dirname.endsWith(".opaque")) {
+      if (dirname.endsWith(SAHPoolDirName)) {
         const file = await item.handle.getFile();
         const filename = await decodeSAHPoolFilename(file);
         if (filename) {
