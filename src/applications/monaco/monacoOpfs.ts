@@ -85,7 +85,6 @@ export async function initEditor(
     automaticLayout: true,
     theme: "vs",
     fontSize: 14,
-    fontFamily: "Fira Code, monospace",
     fontLigatures: true,
   });
 

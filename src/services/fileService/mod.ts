@@ -1,10 +1,12 @@
 import {
   ROOT_DIR,
+  exists,
   isFileHandle,
   mkdir,
   readDir,
   remove,
   stat,
+  writeFile,
 } from "@happy-js/happy-opfs";
 import { once } from "../../utils/sundry";
 import { extname, normalize, resolve } from "../../utils/opfsPath";
@@ -159,5 +161,19 @@ export class FileService {
       });
 
     await saveToDirHandle(diskHandle, handles);
+  };
+
+  createFile = async (name: string) => {
+    const newPath = resolve(this.currentPath, name);
+    checkPathValidity(newPath);
+    const existed = (await exists(newPath)).unwrap();
+    if (!existed) {
+      await writeFile(newPath, new Blob(), {
+        create: true,
+      });
+      await this.refresh();
+    } else {
+      throw new Error("File already exists");
+    }
   };
 }

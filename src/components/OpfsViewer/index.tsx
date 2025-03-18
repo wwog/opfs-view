@@ -23,7 +23,7 @@ export const OpfsViewer: FC = () => {
     const name = clickedItem.getAttribute("data-name")!;
     const kind = clickedItem.getAttribute("data-kind")!;
     const path = clickedItem.getAttribute("data-path")!;
-    
+
     if (kind === "directory") {
       fileService.jumpRelative(name);
     } else if (kind === "file") {
@@ -43,6 +43,16 @@ export const OpfsViewer: FC = () => {
     const folderName = prompt("Enter folder name");
     if (folderName) {
       fileService.mkdir(folderName);
+    }
+  };
+
+  const handleNewFile = () => {
+    const fileName = prompt("Enter file name");
+    if (fileName) {
+      fileService.createFile(fileName).catch((error) => {
+        console.error("Error creating file:", error);
+        toast.error("Failed to create file: " + error.message);
+      });
     }
   };
 
@@ -122,6 +132,7 @@ export const OpfsViewer: FC = () => {
 
                 <If.Else>
                   <List>
+                    <List.Item onClick={handleNewFile}>📄 New File</List.Item>
                     <List.Item onClick={handleNewCreateFolder}>
                       📁 New Folder
                     </List.Item>
