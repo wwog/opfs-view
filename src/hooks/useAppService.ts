@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { ApplicationService } from "./mod";
+import { ApplicationService } from "../services/appService/mod";
 
 const creator = (set: any) => {
   const appService = ApplicationService.getInstance();

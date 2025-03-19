@@ -1,7 +1,7 @@
 import { FC } from "react";
 import "./index.css";
 import { ApplicationSelector } from "./selector";
-import { useAppService } from "../../services/appService/useAppService";
+import { useAppService } from "../../hooks/useAppService";
 import { If } from "../Common/If";
 
 export const ApplicationContainer: FC = () => {

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { MarqueeSelection } from "../MarqueeSelection";
 import css from "./index.module.css";
-import { useFileService } from "../../services/fileService/useFileService";
+import { useFileService } from "../../hooks/useFileService";
 import { ArrayRender } from "../Common/ArrayRender";
 import { Button } from "../Button";
 import { DropWrapper } from "../DropWrapper";
@@ -12,7 +12,7 @@ import toast from "react-hot-toast";
 import { StatusBar } from "./StatusBar";
 import { useOpfsViewerStore } from "../../hooks/useOpfsViewerStore";
 import { FileService } from "../../services/fileService/mod";
-import { useAppService } from "../../services/appService/useAppService";
+import { useAppService } from "../../hooks/useAppService";
 
 export const OpfsViewer: FC = () => {
   const { currentItems, canGoBack, fileService, currentPath } =
@@ -88,7 +88,7 @@ export const OpfsViewer: FC = () => {
           onSelectedChange={(selectedItems) => {
             setSelectItems(selectedItems);
           }}
-          contextMenuContent={(e, clicked, selectedItems) => {
+          contextMenuContent={(_, clicked, selectedItems) => {
             return (
               <If condition={clicked !== null}>
                 <List>

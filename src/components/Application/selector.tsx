@@ -1,5 +1,5 @@
 import { FC, type ReactNode } from "react";
-import { useAppService } from "../../services/appService/useAppService";
+import { useAppService } from "../../hooks/useAppService";
 import { Close } from "../Icons";
 
 interface SelectorItemProps {
