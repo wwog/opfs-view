@@ -1,8 +1,8 @@
 /**
  *
- * Reading the header information of SAHPool
+ * Reading the header information of `SAHPool File`
  *
- * Derived from the summary parsing of the `SAHPool` vfs in `opfs-explorer`
+ * Derived from the summary parsing of the `SAHPool File` vfs in `opfs-explorer`
  * Origin: https://github.dev/tomayac/opfs-explorer
  *
  */
